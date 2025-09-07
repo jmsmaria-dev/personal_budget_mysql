@@ -1,21 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Personal Budget</title>
     <meta name="description" content="A free personal budger app">
     <meta name="keywords" content="app free budget finance">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- This is an SEO Change -->
+    <meta name="author" content="Maria James">
+    <!-- This is an SEO Change -->
+    <link rel="canonical" href="http://159.89.189.21/index.html">
+    <!-- This is an SEO Change -->
+    <meta property="og:title" content="Maria James Personal Budget App">
     <link rel="stylesheet" href="./reset.css">
     <link rel="stylesheet" href="./main.css">
 </head>
 <body>
 
+<!-- This is a Semantic HTML Change -->
 <header>
     <div class="top-banner" style="background:#f5f5f5; padding:1em 0; text-align:center; position:relative;">
-        <a href="#main" class="skip" style="position:absolute;left:0;top:0;padding:0.5em 1em;background:#222;color:#fff;text-decoration:none;z-index:1000;border-radius:0 0 4px 0;">Skip to main content</a>
+    <!-- This is an A11y Change: Added skip to main content link -->
+    <a href="#main" class="skip" style="position:absolute;left:0;top:0;padding:0.5em 1em;background:#222;color:#fff;text-decoration:none;z-index:1000;border-radius:0 0 4px 0;">Skip to main content</a>
         <span style="font-weight:bold; font-size:1.2em;">Maria James Personal Budget App</span>
     </div>
+    <!-- This is a Semantic HTML Change -->
     <nav aria-label="Main navigation">
         <ul>
             <li><a href="./">Home</a></li>
@@ -94,7 +102,8 @@
             <article>
                 <h1>Chart</h1>
                 <p>
-                    <canvas id="myChart" width="400" height="400"></canvas>
+                    <!-- This is an A11y Change: Added aria-label and role to canvas for chart accessibility -->
+                    <canvas id="myChart" width="400" height="400" aria-label="Budget chart" role="img"></canvas>
                 </p>
             </article>
 
@@ -102,6 +111,7 @@
 
     </main>
 
+    <!-- This is a Semantic HTML Change -->
     <footer class="bottom">
         <div class="center">
             All rights reserved &copy; Maria James
@@ -136,6 +146,7 @@
         }
 
         function getBudget() {
+            <!-- Updated API URL from localhost to public IP for pm2/production use -->
             axios.get('http://159.89.189.21:3000/budget')
             .then(function (res) {
                 for (var i = 0; i < res.data.myBudget.length; i++) {
