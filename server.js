@@ -30,5 +30,5 @@ app.get('/budget', (req, res) => {
 });
 
 app.listen(port, () => {
-    console.log(`API served at http://localhost:${port}`);
+    console.log(`API served at http://159.89.189.21:${port}`);
 });
