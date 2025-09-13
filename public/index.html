@@ -127,10 +127,15 @@
                     {
                         data: [],
                         backgroundColor: [
-                            '#ffcd56',
-                            '#ff6384',
-                            '#36a2eb',
-                            '#fd6b19',
+                            '#ffcd56', // Eat out
+                            '#ff6384', // Rent
+                            '#36a2eb', // Grocery
+                            '#fd6b19', // Utilities
+                            '#8bc34a', // Transportation
+                            '#9c27b0', // Entertainment
+                            '#00bcd4', // Savings
+                            '#e91e63', // Healthcare
+                            '#ffc107'  // Education
                         ]
                     }
                 ],
@@ -147,7 +152,7 @@
 
         function getBudget() {
             <!-- Updated API URL from localhost to public IP for pm2/production use -->
-            axios.get('http://159.89.189.21:3001/budget')
+            axios.get('http://localhost:3001/budget')
             .then(function (res) {
                 for (var i = 0; i < res.data.myBudget.length; i++) {
                     dataSource.datasets[0].data[i] = res.data.myBudget[i].budget;
