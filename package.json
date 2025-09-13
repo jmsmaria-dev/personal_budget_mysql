@@ -9,17 +9,18 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/fabionolasco/personal-budget.git"
+    "url": "git+https://github.com/jmsmaria-dev/personal-budget1.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/fabionolasco/personal-budget/issues"
+    "url": "https://github.com/jmsmaria-dev/personal-budget1/issues"
   },
-  "homepage": "https://github.com/fabionolasco/personal-budget#readme",
+  "homepage": "https://github.com/jmsmaria-dev/personal-budget1#readme",
   "dependencies": {
     "cors": "^2.8.5",
-    "express": "^4.17.1"
-  }
+    "express": "^4.21.2"
+  },
+  "type": "commonjs"
 }
