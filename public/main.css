@@ -107,3 +107,27 @@ main article {
         margin: 10px;
     }
 }
+
+#d3Chart {
+    width: 960px;
+    height: 500px;
+    position: relative;
+    
+}
+
+#d3Chart svg {
+    width: 100%;
+    height: 100%;
+    margin: 0 auto;
+}
+
+path.slice {
+    stroke-width: 2px;
+}
+
+polyline {
+    stroke: black;
+    stroke-width: 1px;
+    fill: none;
+    opacity: 0.3;
+}
