@@ -20,7 +20,8 @@
   "homepage": "https://github.com/jmsmaria-dev/personal-budget1#readme",
   "dependencies": {
     "cors": "^2.8.5",
-    "express": "^4.21.2"
+    "express": "^4.21.2",
+    "mongoose": "^8.19.1"
   },
   "type": "commonjs"
 }

@@ -130,17 +130,7 @@
                 datasets: [
                     {
                         data: [],
-                        backgroundColor: [
-                            '#ffcd56', // Eat out
-                            '#ff6384', // Rent
-                            '#36a2eb', // Grocery
-                            '#fd6b19', // Utilities
-                            '#4bc0c0', // Transportation
-                            '#9966ff', // Entertainment
-                            '#00bcd4', // Savings
-                            '#e91e63', // Healthcare
-                            '#ffc107'  // Education
-                        ]
+                        backgroundColor: [] // Colors will come from MongoDB
                     }
                 ],
                 labels: []
@@ -155,11 +145,16 @@
         }
 
         function getBudget() {
-            // Updated API URL from localhost to public IP for pm2/production use
             axios.get('http://localhost:3001/budget')
             .then(function (res) {
+                // Clear existing data
+                dataSource.datasets[0].data = [];
+                dataSource.datasets[0].backgroundColor = [];
+                dataSource.labels = [];
+                
                 for (var i = 0; i < res.data.myBudget.length; i++) {
                     dataSource.datasets[0].data[i] = res.data.myBudget[i].budget;
+                    dataSource.datasets[0].backgroundColor[i] = res.data.myBudget[i].color;
                     dataSource.labels[i] = res.data.myBudget[i].title;
                 }
                 createChart();
@@ -173,47 +168,6 @@
     <script src="https://d3js.org/d3.v3.min.js"></script>
  
     <script>
-        var dataSource = {
-                datasets: [
-                    {
-                        data: [],
-                        backgroundColor: [
-                            '#ffcd56', // Eat out
-                            '#ff6384', // Rent
-                            '#36a2eb', // Grocery
-                            '#fd6b19', // Utilities
-                            '#4bc0c0', // Transportation
-                            '#9966ff', // Entertainment
-                            '#00bcd4', // Savings
-                            '#e91e63', // Healthcare
-                            '#ffc107'  // Education
-                        ]
-                    }
-                ],
-                labels: []
-            };
-
-        function createChart() {
-            var ctx = document.getElementById('myChart').getContext('2d');
-            var myPieChart = new Chart(ctx, {
-                type: 'pie',
-                data: dataSource
-            });
-        }
-
-        function getBudget() {
-            axios.get('/budget')
-            .then(function (res) {
-                for (var i = 0; i < res.data.myBudget.length; i++) {
-                    dataSource.datasets[0].data[i] = res.data.myBudget[i].budget;
-                    dataSource.labels[i] = res.data.myBudget[i].title;
-                }
-                createChart();
-            });
-        }
-
-        getBudget();
-
     var width = 960,
         height = 450,
         radius = Math.min(width, height) / 2;
@@ -247,28 +201,18 @@
 
     var key = function(d){ return d.data.label; };
 
-    var color = d3.scale.ordinal()
-        .domain(["Lorem ipsum", "dolor sit", "amet", "consectetur", "adipisicing", "elit", "sed", "do", "eiusmod", "tempor", "incididunt"])
-        .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
-
     axios.get('/budget')
     .then(function(res){
-        var data = res.data.myBudget.map(d => ({label: d.title, value: d.budget}));
+        var data = res.data.myBudget.map(d => ({
+            label: d.title, 
+            value: d.budget, 
+            color: d.color
+        }));
 
-        // Define colors based on your data
+        // Define colors using data from MongoDB - no hardcoded colors
         var color = d3.scale.ordinal()
             .domain(data.map(d => d.label))
-            .range([
-                '#ffcd56', // Eat out
-                '#ff6384', // Rent
-                '#36a2eb', // Grocery
-                '#fd6b19', // Utilities
-                '#4bc0c0', // Transportation
-                '#9966ff', // Entertainment
-                '#00bcd4', // Savings
-                '#e91e63', // Healthcare
-                '#ffc107'  // Education
-            ]);
+            .range(data.map(d => d.color));
 
         drawChart(data, color);
 
@@ -291,7 +235,10 @@
 
         slice.enter()
             .insert("path")
-            .style("fill", function(d) { return color(d.data.label); })
+            .style("fill", function(d) { 
+                // Use the color directly from the data
+                return d.data.color || color(d.data.label); 
+            })
             .attr("class", "slice");
 
         slice		
