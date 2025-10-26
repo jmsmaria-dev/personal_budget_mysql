@@ -1,0 +1,94 @@
+# MySQL Setup Commands for Digital Ocean Droplet (143.198.136.197)
+
+## After SSH into your droplet, run these commands:
+
+# 1. Access MySQL as root
+sudo mysql -u root -p
+
+# 2. Create the database
+CREATE DATABASE IF NOT EXISTS personal_budget;
+
+# 3. Use the database
+USE personal_budget;
+
+# 4. Create the budget table
+CREATE TABLE IF NOT EXISTS budget (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL UNIQUE,
+    budget DECIMAL(10,2) NOT NULL,
+    color VARCHAR(7) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+# 5. Create the users table for authentication
+CREATE TABLE IF NOT EXISTS users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    email VARCHAR(255) UNIQUE,
+    first_name VARCHAR(255),
+    last_name VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+# 6. Create a user for remote access (replace YOUR_PUBLIC_IP with your actual IP)
+# Find your public IP at: https://www.whatismyip.com/
+CREATE USER 'budget_user'@'YOUR_PUBLIC_IP' IDENTIFIED BY 'your_secure_password123';
+
+# 7. Grant permissions to the user
+GRANT SELECT, INSERT, UPDATE, DELETE ON personal_budget.* TO 'budget_user'@'YOUR_PUBLIC_IP';
+
+# 8. Update user permissions for remote connection
+ALTER USER 'mariaadmin'@'173.92.131.82' 
+IDENTIFIED WITH mysql_native_password BY 'mariapassword123';
+
+# 9. Grant all privileges (for development)
+GRANT ALL PRIVILEGES ON *.* TO 'mariaadmin'@'173.92.131.82' ;
+
+# 10. Apply the changes
+FLUSH PRIVILEGES;
+
+# 11. Verify tables were created
+SHOW TABLES;
+
+# 12. Check table structure
+DESCRIBE budget;
+DESCRIBE users;
+
+# 13. Exit MySQL
+EXIT;
+
+## After setting up MySQL, configure firewall:
+
+# Allow MySQL connections from your IP (replace YOUR_PUBLIC_IP)
+sudo ufw allow from 173.92.131.82 to any port 3306
+
+# Allow from droplet's private IP (replace with actual private IP 10.124.x.x)
+sudo ufw allow from 143.198.136.197 to any port 3306
+
+# Restart MySQL
+sudo systemctl restart mysql
+
+## Insert some initial budget data (optional):
+sudo mysql -u root -p
+
+USE personal_budget;
+
+INSERT INTO budget (title, budget, color) VALUES 
+('Eat out', 52, '#FF6B6B'),
+('Rent', 604, '#4ECDC4'),
+('Grocery', 156, '#45B7D1'),
+('Utilities', 174, '#96CEB4'),
+('Transportation', 104, '#FFEAA7'),
+('Entertainment', 87, '#DDA0DD'),
+('Savings', 139, '#98D8C8'),
+('Healthcare', 70, '#F7DC6F'),
+('Education', 114, '#BB8FCE');
+
+# Verify data was inserted
+SELECT * FROM budget;
+SELECT * FROM users;
+
+EXIT;

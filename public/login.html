@@ -43,10 +43,52 @@
 			padding: 2em 2em 2em 2em;
 			border-radius: 8px;
 			box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-			max-width: 400px;
+			max-width: 450px;
 			margin: 40px auto 2em auto;
 			position: relative;
 			z-index: 2;
+		}
+		
+		/* Form styling */
+		.login-form, .signup-form {
+			width: 100%;
+		}
+		
+		.login-form label, .signup-form label {
+			display: block;
+			margin: 0.8em 0 0.3em 0;
+			font-weight: bold;
+			color: #333;
+		}
+		
+		.login-form input, .signup-form input {
+			width: 100%;
+			padding: 0.8em;
+			border: 1px solid #ddd;
+			border-radius: 4px;
+			box-sizing: border-box;
+			font-size: 1em;
+		}
+		
+		.login-form input:focus, .signup-form input:focus {
+			border-color: #007bff;
+			outline: none;
+			box-shadow: 0 0 5px rgba(0,123,255,0.3);
+		}
+		
+		.login-form button, .signup-form button {
+			width: 100%;
+			margin-top: 1em;
+			font-size: 1em;
+			transition: background-color 0.3s;
+		}
+		
+		.login-form button:hover {
+			background-color: #0056b3 !important;
+		}
+		
+		.signup-form button:hover {
+			background-color: #218838 !important;
 		}
 		.page-area h1 {
 			margin-top: 0;
@@ -112,16 +154,52 @@
 <main class="center" id="main">
 	<!-- This is a Semantic HTML Change -->
 	<div class="page-area">
-	<!-- This is a Semantic HTML Change -->
-	<h1>Login</h1>
-	<!-- This is an A11y Change -->
-	<form class="login-form" aria-label="Login form">
-			<label for="username">Username</label>
-			<input type="text" id="username" name="username" required>
-			<label for="password">Password</label>
-			<input type="password" id="password" name="password" required>
-			<button type="submit">Login</button>
-		</form>
+	<!-- Login Form -->
+	<form class="login-form" aria-label="Login form" id="loginForm" style="display: block;">
+		<h2>Login to Your Account</h2>
+		<label for="loginUsername">Username</label>
+		<input type="text" id="loginUsername" name="username" required>
+		
+		<label for="loginPassword">Password</label>
+		<input type="password" id="loginPassword" name="password" required>
+		
+		<button type="submit" style="background-color: #007bff; color: white; padding: 0.8em 1.5em; border: none; border-radius: 4px; cursor: pointer; margin: 0.5em 0;">Login</button>
+		
+		<p style="text-align: center; margin: 1em 0;">
+			Don't have an account? 
+			<button type="button" onclick="showSignupForm()" style="background: none; border: none; color: #007bff; cursor: pointer; text-decoration: underline;">Sign Up Here</button>
+		</p>
+		
+		<div id="loginMessage"></div>
+	</form>
+
+	<!-- Signup Form -->
+	<form class="signup-form" aria-label="Signup form" id="signupForm" style="display: none;">
+		<h2>Create New Account</h2>
+		<label for="signupUsername">Username *</label>
+		<input type="text" id="signupUsername" name="username" required>
+		
+		<label for="signupPassword">Password *</label>
+		<input type="password" id="signupPassword" name="password" required>
+		
+		<label for="signupEmail">Email</label>
+		<input type="email" id="signupEmail" name="email">
+		
+		<label for="signupFirstName">First Name</label>
+		<input type="text" id="signupFirstName" name="first_name">
+		
+		<label for="signupLastName">Last Name</label>
+		<input type="text" id="signupLastName" name="last_name">
+		
+		<button type="submit" style="background-color: #28a745; color: white; padding: 0.8em 1.5em; border: none; border-radius: 4px; cursor: pointer; margin: 0.5em 0;">Create Account</button>
+		
+		<p style="text-align: center; margin: 1em 0;">
+			Already have an account? 
+			<button type="button" onclick="showLoginForm()" style="background: none; border: none; color: #007bff; cursor: pointer; text-decoration: underline;">Login Here</button>
+		</p>
+		
+		<div id="signupMessage"></div>
+	</form>
 	</div>
 </main>
 	<!-- This is a Semantic HTML Change -->
@@ -130,5 +208,138 @@
 		All rights reserved &copy; Maria James
 	</div>
 </footer>
+
+<script>
+// Function to show signup form and hide login form
+function showSignupForm() {
+    document.getElementById('loginForm').style.display = 'none';
+    document.getElementById('signupForm').style.display = 'block';
+    document.querySelector('.hero h1').textContent = 'Sign Up';
+    document.querySelector('.hero h2').textContent = 'Create your personal budget account';
+}
+
+// Function to show login form and hide signup form
+function showLoginForm() {
+    document.getElementById('signupForm').style.display = 'none';
+    document.getElementById('loginForm').style.display = 'block';
+    document.querySelector('.hero h1').textContent = 'Login';
+    document.querySelector('.hero h2').textContent = 'Access your personal budget account';
+}
+
+// Handle login form submission
+document.getElementById('loginForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const messageDiv = document.getElementById('loginMessage');
+    messageDiv.innerHTML = '<p>Logging in...</p>';
+    
+    const username = document.getElementById('loginUsername').value;
+    const password = document.getElementById('loginPassword').value;
+    
+    try {
+        const response = await fetch('/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ username, password })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            messageDiv.innerHTML = `
+                <div style="color: green; padding: 10px; background-color: #d4edda; border: 1px solid #c3e6cb; border-radius: 4px; margin: 10px 0;">
+                    <h3>✅ Login Successful!</h3>
+                    <p>Welcome, ${data.data.username}!</p>
+                    <p>Redirecting to homepage...</p>
+                </div>
+            `;
+            
+            // Store user data and redirect after 2 seconds
+            localStorage.setItem('currentUser', JSON.stringify(data.data));
+            setTimeout(() => {
+                window.location.href = '/';
+            }, 2000);
+            
+        } else {
+            messageDiv.innerHTML = `
+                <div style="color: red; padding: 10px; background-color: #f8d7da; border: 1px solid #f5c6cb; border-radius: 4px; margin: 10px 0;">
+                    <h3>❌ Login Failed</h3>
+                    <p>${data.message}</p>
+                </div>
+            `;
+        }
+    } catch (error) {
+        messageDiv.innerHTML = `
+            <div style="color: red; padding: 10px; background-color: #f8d7da; border: 1px solid #f5c6cb; border-radius: 4px; margin: 10px 0;">
+                <h3>❌ Network Error</h3>
+                <p>Unable to connect to server. Please try again.</p>
+            </div>
+        `;
+    }
+});
+
+// Handle signup form submission
+document.getElementById('signupForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const messageDiv = document.getElementById('signupMessage');
+    messageDiv.innerHTML = '<p>Creating account...</p>';
+    
+    const formData = {
+        username: document.getElementById('signupUsername').value,
+        password: document.getElementById('signupPassword').value,
+        email: document.getElementById('signupEmail').value || null,
+        first_name: document.getElementById('signupFirstName').value || null,
+        last_name: document.getElementById('signupLastName').value || null
+    };
+    
+    try {
+        const response = await fetch('/signup', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            messageDiv.innerHTML = `
+                <div style="color: green; padding: 10px; background-color: #d4edda; border: 1px solid #c3e6cb; border-radius: 4px; margin: 10px 0;">
+                    <h3>✅ Account Created Successfully!</h3>
+                    <p>Welcome, ${data.data.username}!</p>
+                    <p>You can now login with your credentials.</p>
+                </div>
+            `;
+            
+            // Clear the form and switch to login after 3 seconds
+            document.getElementById('signupForm').reset();
+            setTimeout(() => {
+                showLoginForm();
+                document.getElementById('loginUsername').value = formData.username;
+            }, 3000);
+            
+        } else {
+            messageDiv.innerHTML = `
+                <div style="color: red; padding: 10px; background-color: #f8d7da; border: 1px solid #f5c6cb; border-radius: 4px; margin: 10px 0;">
+                    <h3>❌ Signup Failed</h3>
+                    <p>${data.message}</p>
+                </div>
+            `;
+        }
+    } catch (error) {
+        messageDiv.innerHTML = `
+            <div style="color: red; padding: 10px; background-color: #f8d7da; border: 1px solid #f5c6cb; border-radius: 4px; margin: 10px 0;">
+                <h3>❌ Network Error</h3>
+                <p>Unable to connect to server. Please try again.</p>
+            </div>
+        `;
+    }
+});
+</script>
+
 </body>
 </html>
